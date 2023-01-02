@@ -9,18 +9,13 @@ driver = webdriver.Chrome(executable_path=DRIVER_PATH)
 def crawl_page(src):
     driver.get(src)
     list_ref = '//*[@aria-label="Search results"]/li'
-    projectsPerPage = len(driver.find_elements(By.XPATH, list_ref))
+    for project_element in driver.find_elements(By.XPATH,list_ref):
+        projectName = project_element.find_element(By.XPATH,'.//*[@class="package-snippet__name"]').text
+        projectVersion = project_element.find_element(By.XPATH,'.//*[@class="package-snippet__version"]').text
+        projectCreated = project_element.find_element(By.XPATH,'.//*[@class="package-snippet__created"]/time').text
 
-    for projectCount in range(1,projectsPerPage):
-        xp_projectName = list_ref+'['+ str(projectCount)  +']//*[@class="package-snippet__name"]'
-        xp_projectVersion = list_ref + '[' + str(projectCount) + ']//*[@class="package-snippet__version"]'
-        xp_projectCreated = list_ref + '[' + str(projectCount) + ']//*[@class="package-snippet__created"]/time'
-        xp_projectDescription = list_ref + '[' + str(projectCount) + ']//*[@class="package-snippet__description"]'
 
-        projectName = driver.find_element(By.XPATH, xp_projectName).text
-        projectVersion = driver.find_element(By.XPATH, xp_projectVersion).text
-        projectCreated = driver.find_element(By.XPATH, xp_projectCreated).text
-        # projctDescription = driver.find_element(By.XPATH,xp_projectDescription).text
+
         print(projectName,projectVersion,projectCreated)
         projct_info = [projectName,projectVersion,projectCreated]
         filename = "Django Projects.csv"
@@ -37,7 +32,7 @@ def crawl_page(src):
 
 
 target_page = 'https://pypi.org/search/?&o=&c=Framework+%3A%3A+Django'
-tp2 = 'https://pypi.org/search/?c=Framework+%3A%3A+Django&o=&page=495'
-print(crawl_page(tp2))
+
+print(crawl_page(target_page))
 
 
